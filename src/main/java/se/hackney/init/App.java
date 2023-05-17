@@ -27,6 +27,7 @@ public class App {
 
         // Recurse into type, recreating directory structure from type inside current director
         // Copy all files at current level. Replace all template values in the files using values from parameters ( or secondarily using values from .defaults in type root )
+        // Only write files if not already present in directory. Use --force flag in order to overwrite already existing files.
 
     }
 
