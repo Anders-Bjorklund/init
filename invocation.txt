@@ -1,3 +1,0 @@
-helm create myapp --starter sample-starter-chart
-
-init sample-starter-chart myapp
