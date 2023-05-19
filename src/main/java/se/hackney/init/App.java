@@ -10,6 +10,9 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
+import se.hackney.init.internal.ArgumentParser;
+import se.hackney.init.internal.Values;
+
 public class App {
 
     public static void main(String[] args) {
@@ -20,20 +23,16 @@ public class App {
             System.exit(0);
         }
 
-        String currentDir = System.getProperty("user.dir");
-        System.out.println("CURRENT: " + currentDir);
-
-        for (String string : args) {
-            System.out.println(string);
-        }
+        Values values = ArgumentParser.parse(args);
 
         String home = System.getProperty("user.home");
-        System.out.println("[ current ] = " + home);
-
         String templateHome = home + File.separator + ".init" + File.separator + "types";
-        System.out.println("[ templateHome ] = " + templateHome);
+        values.setTemplateHome(templateHome);
 
-        init(currentDir, templateHome, args[0]);
+        String currentDir = System.getProperty("user.dir");
+        // System.out.println("CURRENT: " + currentDir);
+
+        init(currentDir, getTemplateDir(values), values);
         // Recurse into type, recreating directory structure from type inside current
         // director
         // Copy all files at current level. Replace all template values in the files
@@ -44,42 +43,15 @@ public class App {
 
     }
 
-    private static void init(String currentDir, String templateHome, String template) {
 
-        // List all termplate directories, find selected template using case-insensitive
-        // comparison
-        List<File> files = Arrays.asList(new File(templateHome).listFiles(File::isDirectory));
-        String templateDir = null;
-
-        for (File file : files) {
-            String filePath = file.toString();
-
-            System.out.println("FILE: " + filePath);
-
-            if (filePath.toUpperCase().endsWith(template.toUpperCase())) {
-                templateDir = filePath;
-                System.out.println("[ TEMPLATE-DIR ] : " + templateDir);
-                break;
-            }
-        }
-
-        if (templateDir == null) {
-            System.out.println("Unable to find a matching init template.");
-            System.exit(0);
-        }
-
-        init(currentDir, templateDir);
-
-    }
-
-    private static void init(String currentDir, String templateDir) {
+    private static void init(String currentDir, String templateDir, Values values) {
 
         // Read all files, insert any template values and store to files in target
         // directory while potentially setting file names based on template values
-        List<File> files = Arrays.asList(new File(templateDir).listFiles( File::isFile ) );
+        List<File> files = Arrays.asList(new File(templateDir).listFiles(File::isFile));
 
         for (File file : files) {
-            System.out.println("[ FILE ] : " + file.getName());
+            // System.out.println("[ FILE ] : " + file.getName());
 
             String targetPath = currentDir + File.separator + file.getName();
             String content = getContent(file.getAbsolutePath());
@@ -87,20 +59,42 @@ public class App {
             putContent(targetPath, content);
         }
 
-        // For each directory in template, create directory in target and recursively init them.
-        List<File> directories = Arrays.asList(new File(templateDir).listFiles( File::isDirectory ) );
+        // For each directory in template, create directory in target and recursively
+        // init them.
+        List<File> directories = Arrays.asList(new File(templateDir).listFiles(File::isDirectory));
 
         for (File directory : directories) {
-            String localDirectory =  directory.getName();
-         
+            String localDirectory = directory.getName();
+
             String absoluteDirectory = currentDir + File.separator + localDirectory;
-            new File( absoluteDirectory ).mkdirs();
+            new File(absoluteDirectory).mkdirs();
 
             String nextTemplateDirectory = templateDir + File.separator + localDirectory;
-            init( absoluteDirectory, nextTemplateDirectory );
+            init(absoluteDirectory, nextTemplateDirectory, values);
         }
 
     }
+
+
+    private static String getTemplateDir(Values values) {
+
+        // List all termplate directories, find selected template using case-insensitive comparison
+        List<File> files = Arrays.asList(new File(values.getTemplateHome()).listFiles(File::isDirectory));
+
+        for (File file : files) {
+            String filePath = file.toString();
+
+            if (filePath.toUpperCase().endsWith(values.getTemplateName().toUpperCase())) {
+                return filePath;
+            }
+        }
+
+        System.out.println("Unable to find a matching init template.");
+        System.exit(0);
+
+        return null;
+    }
+
 
     private static String getContent(String path) {
 
