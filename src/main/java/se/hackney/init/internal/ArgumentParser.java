@@ -31,23 +31,15 @@ public class ArgumentParser {
 
             if (positionEquals > 0) {
                 String name = arguments[index].substring(0, positionEquals);
-                out("NAME: " + name);
-
                 String value = arguments[index].substring(positionEquals + 1);
-                out("VALUE: " + value);
 
                 values.getNamedValues().put(name.toUpperCase(), value);
-
                 continue;
             }
 
         }
 
         return values;
-    }
-
-    private static void out(String out) {
-        System.out.println(out);
     }
 
 }

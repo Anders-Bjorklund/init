@@ -41,6 +41,8 @@ public class Templating {
                 if( substituting ) {
                     String replacement = values.getNamedValues().get(other.trim().toUpperCase());
 
+                    // System.out.println(other.trim() + " : " + replacement );
+
                     if( replacement == null ) {
                         System.out.println( "Could not find value for parameter [ " + other + " ]");
                         System.exit(0);
@@ -55,6 +57,7 @@ public class Templating {
             position += stringLength(start) + stringLength(end) + stringLength(other);
         }
 
+        // System.out.println("RESULT : " + buffer.toString());
         return buffer.toString();
     }
 
