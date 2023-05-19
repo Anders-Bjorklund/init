@@ -10,7 +10,6 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
-
 public class App {
 
     public static void main(String[] args) {
@@ -60,6 +59,7 @@ public class App {
             if (filePath.toUpperCase().endsWith(template.toUpperCase())) {
                 templateDir = filePath;
                 System.out.println("[ TEMPLATE-DIR ] : " + templateDir);
+                break;
             }
         }
 
@@ -76,10 +76,10 @@ public class App {
 
         // Read all files, insert any template values and store to files in target
         // directory while potentially setting file names based on template values
-        List<File> files = Arrays.asList(new File(templateDir).listFiles(File::isFile));
+        List<File> files = Arrays.asList(new File(templateDir).listFiles( File::isFile ) );
 
         for (File file : files) {
-            System.out.println("KJHKJHK " + file.getName());
+            System.out.println("[ FILE ] : " + file.getName());
 
             String targetPath = currentDir + File.separator + file.getName();
             String content = getContent(file.getAbsolutePath());
@@ -87,7 +87,18 @@ public class App {
             putContent(targetPath, content);
         }
 
-        // For each directory in template, create directory in target
+        // For each directory in template, create directory in target and recursively init them.
+        List<File> directories = Arrays.asList(new File(templateDir).listFiles( File::isDirectory ) );
+
+        for (File directory : directories) {
+            String localDirectory =  directory.getName();
+         
+            String absoluteDirectory = currentDir + File.separator + localDirectory;
+            new File( absoluteDirectory ).mkdirs();
+
+            String nextTemplateDirectory = templateDir + File.separator + localDirectory;
+            init( absoluteDirectory, nextTemplateDirectory );
+        }
 
     }
 
@@ -105,15 +116,15 @@ public class App {
     }
 
     private static void putContent(String path, String content) {
-        
+
         try {
-            BufferedWriter writer = new BufferedWriter( new FileWriter( path ) );
-            writer.write( content );
+            BufferedWriter writer = new BufferedWriter(new FileWriter(path));
+            writer.write(content);
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
+
     }
 
 }
