@@ -36,7 +36,7 @@ public class ArgumentParser {
                 String value = arguments[index].substring(positionEquals + 1);
                 out("VALUE: " + value);
 
-                values.getNamedValues().put(name, value);
+                values.getNamedValues().put(name.toUpperCase(), value);
 
                 continue;
             }
