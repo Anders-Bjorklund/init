@@ -27,7 +27,7 @@ public class App {
         Values values = ArgumentParser.parse(args);
 
         String home = System.getProperty("user.home");
-        String templateHome = home + File.separator + ".init" + File.separator + "types";
+        String templateHome = home + File.separator + ".init" + File.separator + "templates";
         values.setTemplateHome(templateHome);
 
         String currentDir = System.getProperty("user.dir");
