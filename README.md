@@ -2,15 +2,15 @@
 .. is a tool for working with file system templates. Directories and filenames can be set using values given to _init_ and so can values inside files.
 It works recursively so you can have as many directory levels as you would like and you can change names and content at any level.
 
-Init template config is located your users home directory
+Init template config is located the users home directory
 My path ( on a windos machine ) is C:\Users\Anders\.init
 
 .
-└───types
-    ├───example
+└───templates
+    ├───.gitignore
     │       .gitignore
     │
-    └───gitter
+    └───example
         │   ¤¤_filename_¤¤
         │
         └───my-¤¤_directory-name_¤¤-directory
@@ -23,3 +23,15 @@ My path ( on a windos machine ) is C:\Users\Anders\.init
                 │
                 └───subdir-next-level
                         test.txt
+
+This directory structure contains two templates: ___example___ and ___.gitignore___ ( yes, I chose to call this template just like the file contained inside the template )
+
+Where you to go to any directory on your machine and enter
+___init .gitignore___
+
+... this would simply try to copy the template version of .gitignore to your current directory, but it would fail since you did not set a value for the parameter ###other-dir###
+___Could not find value for parameter [ other-dir ]___
+
+init .gitignore other-dir=.vscode/
+
+... would create a local .gitignore file, with some defaults and one additional line ignoring the .vscode directory.
