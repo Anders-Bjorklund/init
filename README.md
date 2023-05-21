@@ -3,13 +3,13 @@
 It works recursively so you can have as many directory levels as you would like and you can change names and content at any level.
 
 Init template config is located the users home directory
-My path ( on a windos machine ) is C:\Users\Anders\.init
+My path ( on a windows machine ) is C:\Users\Anders\.init
 
 .  
 └───templates  
-    ├───.gitignore  
-    │       .gitignore  
-    │  
+&nbsp;&nbsp;&nbsp;&nbsp;├───.gitignore  
+&nbsp;&nbsp;&nbsp;&nbsp;│       .gitignore  
+&nbsp;&nbsp;&nbsp;&nbsp;│  
     └───example  
         │   ¤¤_filename_¤¤  
         │  
