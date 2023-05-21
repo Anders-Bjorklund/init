@@ -1,6 +1,0 @@
-apiVersion: v2
-name: telia-backend
-description: A Helm chart created entirely using init
-
-type: application
-version: 1.0
