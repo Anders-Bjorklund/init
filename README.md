@@ -5,7 +5,7 @@ It works recursively so you can have as many directory levels as you would like 
 Init template config is located the users home directory
 My path ( on a windows machine ) is C:\Users\Anders\.init
 
-.  
+.  
 └───templates  
     ├───.gitignore  
     │       .gitignore  
