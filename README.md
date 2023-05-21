@@ -7,10 +7,10 @@ My path ( on a windows machine ) is C:\Users\Anders\.init
 
 .
 └───templates  
-ꀊꀊ├───.gitignore  
-    │       .gitignore  
-    │  
-    └───example  
+    ├───.gitignore  
+    │       .gitignore  
+    │  
+    └───example  
         │   ¤¤_filename_¤¤  
         │  
         └───my-¤¤_directory-name_¤¤-directory  
