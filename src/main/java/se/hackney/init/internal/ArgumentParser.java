@@ -2,9 +2,7 @@ package se.hackney.init.internal;
 
 public class ArgumentParser {
 
-    public static Values parse(String... arguments) {
-
-        Values values = new Values();
+    public static Values parse(Values values, String... arguments) {
 
         for (int index = 0; index < arguments.length; index++) {
 

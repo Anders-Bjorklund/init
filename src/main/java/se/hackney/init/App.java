@@ -10,7 +10,11 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+
 import se.hackney.init.internal.ArgumentParser;
+import se.hackney.init.internal.Config;
 import se.hackney.init.internal.Templating;
 import se.hackney.init.internal.Values;
 
@@ -24,15 +28,50 @@ public class App {
             System.exit(0);
         }
 
-        Values values = ArgumentParser.parse(args);
+        Values values = new Values();
+        values.setTemplateName( args[ 0 ]);
 
         String home = System.getProperty("user.home");
         String templateHome = home + File.separator + ".init" + File.separator + "templates";
+        String settingsHome = home + File.separator + ".init" + File.separator + "settings";
+        
         values.setTemplateHome(templateHome);
+        values.setSettingsHome(settingsHome);
+
+        applyConfiguration( values );
+        ArgumentParser.parse(values, args);
 
         String currentDir = System.getProperty("user.dir");
 
         init(currentDir, getTemplateDir(values), values);
+
+    }
+
+
+    private static void applyConfiguration( Values values ) {
+
+        List<File> files = Arrays.asList(new File(values.getSettingsHome()).listFiles(File::isDirectory));
+
+        for (File file : files) {
+            String filePath = file.toString();
+
+            if (filePath.toUpperCase().endsWith(values.getTemplateName().toUpperCase())) {
+                String settingsFilePath = filePath + File.separator + "settings.yaml";
+
+                try {
+                    Config config = new ObjectMapper(new YAMLFactory()).readValue( new File( settingsFilePath ), Config.class);
+
+                    for( String name : config.getDefaults().keySet() ) {
+                        values.getNamedValues().put( name.toUpperCase(), config.getDefaults().get(name).toString() );
+                    }
+                    
+                    break;
+                    
+                } catch (IOException e) {
+                    // No settings file found. This is normal
+                }
+            }
+        }
 
     }
 

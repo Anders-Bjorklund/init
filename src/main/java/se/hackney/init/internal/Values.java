@@ -14,7 +14,10 @@ public class Values {
 
     private String templateName = null;
     private String templateHome = null;
+    private String settingsHome = null;
+
     private List< String > positionalValues = new ArrayList<>();
+    
     private Map< String, String > namedValues = new HashMap<>();
     
 }
