@@ -5,24 +5,24 @@ It works recursively so you can have as many directory levels as you would like 
 Init template config is located the users home directory
 My path ( on a windows machine ) is C:\Users\Anders\.init
 
-.  
-└───templates  
-&nbsp;&nbsp;&nbsp;&nbsp;├───.gitignore  
-&nbsp;&nbsp;&nbsp;&nbsp;│       .gitignore  
-&nbsp;&nbsp;&nbsp;&nbsp;│  
-    └───example  
-        │   ¤¤_filename_¤¤  
-        │  
-        └───my-¤¤_directory-name_¤¤-directory  
-            ├───subdir  
-            │       test.txt  
-            │  
-            ├───subdir2  
-            └───subdir3  
-                │   dir3.txt  
-                │  
-                └───subdir-next-level  
-                        test.txt  
+.      .  
+.      └───templates  
+.          ├───.gitignore  
+.          │       .gitignore  
+.          │  
+.          └───example  
+.              │   ¤¤_filename_¤¤  
+.              │  
+.              └───my-¤¤_directory-name_¤¤-directory  
+.                  ├───subdir  
+.                  │       test.txt  
+.                  │  
+.                  ├───subdir2  
+.                  └───subdir3  
+.                      │   dir3.txt  
+.                      │  
+.                      └───subdir-next-level  
+.                              test.txt  
 
 This directory structure contains two templates: ___example___ and ___.gitignore___ ( yes, I chose to call this template just like the file contained inside the template )
 
