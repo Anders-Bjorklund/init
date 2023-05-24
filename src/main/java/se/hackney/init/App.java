@@ -29,52 +29,43 @@ public class App {
         }
 
         Values values = new Values();
-        values.setTemplateName( args[ 0 ]);
+        values.setTemplateName(args[0]);
 
         String home = System.getProperty("user.home");
-        String templateHome = home + File.separator + ".init" + File.separator + "templates";
-        String settingsHome = home + File.separator + ".init" + File.separator + "settings";
-        
+        String templateHome = home + File.separator + ".init" + File.separator + values.getTemplateName()
+                + File.separator + "template";
+        String settingsHome = home + File.separator + ".init" + File.separator + values.getTemplateName()
+                + File.separator + "settings";
+
         values.setTemplateHome(templateHome);
         values.setSettingsHome(settingsHome);
 
-        applyConfiguration( values );
+        applyConfiguration(values);
         ArgumentParser.parse(values, args);
 
         String currentDir = System.getProperty("user.dir");
 
-        init(currentDir, getTemplateDir(values), values);
+        init(currentDir, templateHome, values);
 
     }
 
+    private static void applyConfiguration(Values values) {
 
-    private static void applyConfiguration( Values values ) {
+        try {
+            Config config = new ObjectMapper(new YAMLFactory())
+                    .readValue(new File(values.getSettingsHome() + File.separator + "settings.yaml"), Config.class);
 
-        List<File> files = Arrays.asList(new File(values.getSettingsHome()).listFiles(File::isDirectory));
-
-        for (File file : files) {
-            String filePath = file.toString();
-
-            if (filePath.toUpperCase().endsWith(values.getTemplateName().toUpperCase())) {
-                String settingsFilePath = filePath + File.separator + "settings.yaml";
-
-                try {
-                    Config config = new ObjectMapper(new YAMLFactory()).readValue( new File( settingsFilePath ), Config.class);
-
-                    for( String name : config.getDefaults().keySet() ) {
-                        values.getNamedValues().put( name.toUpperCase(), config.getDefaults().get(name).toString() );
-                    }
-                    
-                    break;
-                    
-                } catch (IOException e) {
-                    // No settings file found. This is normal
-                }
+            for (String name : config.getDefaults().keySet()) {
+                values.getNamedValues().put(name.toUpperCase(), config.getDefaults().get(name).toString());
             }
+
+        } catch (NullPointerException e) {
+
+        } catch(IOException e) {
+            // No settings file found. This is normal
         }
 
     }
-
 
     private static void init(String currentDir, String templateDir, Values values) {
 
@@ -83,8 +74,8 @@ public class App {
         List<File> files = Arrays.asList(new File(templateDir).listFiles(File::isFile));
 
         for (File file : files) {
-            String targetPath = currentDir + File.separator + Templating.untemplate( file.getName(), values );
-            String content = Templating.untemplate( getContent(file.getAbsolutePath()), values );
+            String targetPath = currentDir + File.separator + Templating.untemplate(file.getName(), values);
+            String content = Templating.untemplate(getContent(file.getAbsolutePath()), values);
 
             putContent(targetPath, content);
         }
@@ -96,7 +87,7 @@ public class App {
         for (File directory : directories) {
             String localDirectory = directory.getName();
 
-            String absoluteDirectory = Templating.untemplate( currentDir + File.separator + localDirectory, values );
+            String absoluteDirectory = Templating.untemplate(currentDir + File.separator + localDirectory, values);
             new File(absoluteDirectory).mkdirs();
 
             String nextTemplateDirectory = templateDir + File.separator + localDirectory;
@@ -104,27 +95,6 @@ public class App {
         }
 
     }
-
-
-    private static String getTemplateDir(Values values) {
-
-        // List all termplate directories, find selected template using case-insensitive comparison
-        List<File> files = Arrays.asList(new File(values.getTemplateHome()).listFiles(File::isDirectory));
-
-        for (File file : files) {
-            String filePath = file.toString();
-
-            if (filePath.toUpperCase().endsWith(values.getTemplateName().toUpperCase())) {
-                return filePath;
-            }
-        }
-
-        System.out.println("Unable to find a matching init template.");
-        System.exit(0);
-
-        return null;
-    }
-
 
     private static String getContent(String path) {
 
