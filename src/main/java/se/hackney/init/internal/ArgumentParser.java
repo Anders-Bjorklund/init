@@ -6,14 +6,16 @@ public class ArgumentParser {
 
         for (int index = 0; index < arguments.length; index++) {
 
+            if( arguments[ index ].equals("--list") || arguments[ index ].equals("-l") ) {
+                values.setList( true );
+            }
+
             if (arguments[index].equals("--help")) {
-                System.out.println("Usage:\n" + "  init [template-name]\n  init --list");
-                System.exit(0);
+                values.setHelp( true );
             }
 
             if (arguments[index].equals("--version")) {
-                System.out.println("Version:\n  1.0");
-                System.exit(0);
+                values.setVersion( true );
             }
 
             // First argument should be the template name, unless user needes help or wants to know version.

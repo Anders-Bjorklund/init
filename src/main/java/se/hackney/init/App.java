@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -13,6 +14,7 @@ import java.util.List;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
+import se.hackney.init.internal.Actions;
 import se.hackney.init.internal.ArgumentParser;
 import se.hackney.init.internal.Config;
 import se.hackney.init.internal.Templating;
@@ -31,10 +33,10 @@ public class App {
         Values values = new Values();
         values.setTemplateName(args[0]);
 
-        String home = System.getProperty("user.home");
-        String templateHome = home + File.separator + ".init" + File.separator + values.getTemplateName()
+        values.setHome( System.getProperty("user.home") + File.separator + ".init" );
+        String templateHome = values.getHome() + File.separator + values.getTemplateName()
                 + File.separator + "template";
-        String settingsHome = home + File.separator + ".init" + File.separator + values.getTemplateName()
+        String settingsHome = values.getHome() + File.separator + values.getTemplateName()
                 + File.separator + "settings";
 
         values.setTemplateHome(templateHome);
@@ -42,6 +44,8 @@ public class App {
 
         applyConfiguration(values);
         ArgumentParser.parse(values, args);
+
+        Actions.act( values );
 
         String currentDir = System.getProperty("user.dir");
 
@@ -99,7 +103,7 @@ public class App {
     private static String getContent(String path) {
 
         try {
-            String content = new String(Files.readAllBytes(Paths.get(path)), StandardCharsets.UTF_8);
+            String content = new String(Files.readAllBytes(Paths.get(path)), StandardCharsets.UTF_8 );
             return content;
         } catch (IOException e) {
             e.printStackTrace();
