@@ -4,18 +4,23 @@ public class ArgumentParser {
 
     public static Values parse(Values values, String... arguments) {
 
+        int argumentIndex = 0;
+
         for (int index = 0; index < arguments.length; index++) {
 
             if( arguments[ index ].equals("--list") || arguments[ index ].equals("-l") ) {
                 values.setList( true );
+                continue;
             }
 
             if (arguments[index].equals("--help")) {
                 values.setHelp( true );
+                continue;
             }
 
             if (arguments[index].equals("--version")) {
                 values.setVersion( true );
+                continue;
             }
 
             // First argument should be the template name, unless user needes help or wants to know version.
@@ -27,14 +32,20 @@ public class ArgumentParser {
                 continue;
             }
 
-            int positionEquals = arguments[index].indexOf("=");
+            int positionOfEquals = arguments[index].indexOf("=");
 
-            if (positionEquals > 0) {
-                String name = arguments[index].substring(0, positionEquals);
-                String value = arguments[index].substring(positionEquals + 1);
+            if (positionOfEquals > 0) {
+                String name = arguments[index].substring(0, positionOfEquals);
+                String value = arguments[index].substring(positionOfEquals + 1);
 
                 values.getNamedValues().put(name.toUpperCase(), value);
                 continue;
+            }
+
+            if( positionOfEquals == -1 ) {
+                if( argumentIndex < values.getPositionalNames().size() ) {
+                    values.getNamedValues().put(values.getPositionalNames().get( argumentIndex++ ).toUpperCase(), arguments[ index ]);
+                }
             }
 
         }

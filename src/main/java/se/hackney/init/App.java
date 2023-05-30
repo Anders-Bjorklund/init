@@ -31,25 +31,28 @@ public class App {
         }
 
         Values values = new Values();
-        values.setTemplateName(args[0]);
+        values.setHome(System.getProperty("user.home") + File.separator + ".init");
+        
+        if (args[0].indexOf("-") == -1) {
+            values.setTemplateName(args[0]);
+            
+            String templateHome = values.getHome() + File.separator + values.getTemplateName()
+                    + File.separator + "template";
+            String settingsHome = values.getHome() + File.separator + values.getTemplateName()
+                    + File.separator + "settings";
 
-        values.setHome( System.getProperty("user.home") + File.separator + ".init" );
-        String templateHome = values.getHome() + File.separator + values.getTemplateName()
-                + File.separator + "template";
-        String settingsHome = values.getHome() + File.separator + values.getTemplateName()
-                + File.separator + "settings";
-
-        values.setTemplateHome(templateHome);
-        values.setSettingsHome(settingsHome);
+            values.setTemplateHome(templateHome);
+            values.setSettingsHome(settingsHome);
+        }
 
         applyConfiguration(values);
         ArgumentParser.parse(values, args);
 
-        Actions.act( values );
+        Actions.act(values);
 
         String currentDir = System.getProperty("user.dir");
 
-        init(currentDir, templateHome, values);
+        init(currentDir, values.getTemplateHome(), values);
 
     }
 
@@ -63,9 +66,11 @@ public class App {
                 values.getNamedValues().put(name.toUpperCase(), config.getDefaults().get(name).toString());
             }
 
+            values.setPositionalNames(config.getParameters());
+
         } catch (NullPointerException e) {
 
-        } catch(IOException e) {
+        } catch (IOException e) {
             // No settings file found. This is normal
         }
 
@@ -103,7 +108,7 @@ public class App {
     private static String getContent(String path) {
 
         try {
-            String content = new String(Files.readAllBytes(Paths.get(path)), StandardCharsets.UTF_8 );
+            String content = new String(Files.readAllBytes(Paths.get(path)), StandardCharsets.UTF_8);
             return content;
         } catch (IOException e) {
             e.printStackTrace();

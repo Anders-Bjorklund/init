@@ -1,6 +1,7 @@
 package se.hackney.init.internal;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -12,7 +13,8 @@ import lombok.Setter;
 @Setter
 public class Config {
     private String version;
-    private String parameters;
+    
+    private List< String > parameters;
 
     @JsonProperty("defaults")
     Map< String, String > defaults = new HashMap<>();

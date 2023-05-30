@@ -21,7 +21,7 @@ public class Values {
     private boolean isHelp = false;
     private boolean isVersion = false;
 
-    private List< String > positionalValues = new ArrayList<>();
+    private List< String > positionalNames = new ArrayList<>();
     
     private Map< String, String > namedValues = new HashMap<>();
     
