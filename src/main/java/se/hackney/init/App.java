@@ -36,10 +36,9 @@ public class App {
         if (args[0].indexOf("-") == -1) {
             values.setTemplateName(args[0]);
             
-            String templateHome = values.getHome() + File.separator + values.getTemplateName()
+            String templateHome = values.getHome() + File.separator + "templates" + File.separator + values.getTemplateName()
                     + File.separator + "template";
-            String settingsHome = values.getHome() + File.separator + values.getTemplateName()
-                    + File.separator + "settings";
+            String settingsHome = values.getHome() + File.separator + "templates" + File.separator + values.getTemplateName();
 
             values.setTemplateHome(templateHome);
             values.setSettingsHome(settingsHome);
