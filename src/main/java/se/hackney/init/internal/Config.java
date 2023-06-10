@@ -14,8 +14,14 @@ import lombok.Setter;
 public class Config {
     private String version;
     
-    private List< String > parameters;
+    private List< String > parameters; 
 
     @JsonProperty("defaults")
     Map< String, String > defaults = new HashMap<>();
+
+    @JsonProperty("pre-scripts")
+    private List< String > preScripts;
+    
+    @JsonProperty("post-scripts")
+    private List< String > postScripts;
 }

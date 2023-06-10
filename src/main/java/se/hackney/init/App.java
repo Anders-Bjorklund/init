@@ -4,7 +4,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -33,7 +32,7 @@ public class App {
         Values values = new Values();
         values.setHome(System.getProperty("user.home") + File.separator + ".init");
         
-        if (args[0].indexOf("-") == -1) {
+        if (args[0].indexOf("-") != 0) {
             values.setTemplateName(args[0]);
             
             String templateHome = values.getHome() + File.separator + "templates" + File.separator + values.getTemplateName()
@@ -51,7 +50,9 @@ public class App {
 
         String currentDir = System.getProperty("user.dir");
 
+        exec( values.getPreScripts(), values );
         init(currentDir, values.getTemplateHome(), values);
+        exec( values.getPostScripts(), values );
 
     }
 
@@ -66,13 +67,34 @@ public class App {
             }
 
             values.setPositionalNames(config.getParameters());
+            values.setPreScripts( config.getPreScripts() );
+            values.setPostScripts( config.getPostScripts() );
 
         } catch (NullPointerException e) {
-
+            e.printStackTrace();
         } catch (IOException e) {
-            // No settings file found. This is normal
+            e.printStackTrace();
         }
 
+    }
+
+
+    private static void exec( List< String > scripts, Values values ) {
+
+        if( scripts != null ) {
+
+            Runtime runtime = Runtime.getRuntime();
+
+            for (String script : scripts) {
+                String rendering = Templating.untemplate(script, values );
+                    System.out.println( rendering );
+                    try {
+                        runtime.exec( new String[]{ "cmd.exe", "/C", rendering }  );
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+            }
+        }
     }
 
     private static void init(String currentDir, String templateDir, Values values) {

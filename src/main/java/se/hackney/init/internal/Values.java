@@ -22,6 +22,8 @@ public class Values {
     private boolean isVersion = false;
 
     private List< String > positionalNames = new ArrayList<>();
+    private List< String > preScripts = new ArrayList<>();
+    private List< String > postScripts = new ArrayList<>();
     
     private Map< String, String > namedValues = new HashMap<>();
     
