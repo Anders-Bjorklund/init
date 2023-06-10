@@ -1,9 +1,14 @@
 package se.hackney.init;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -88,15 +93,22 @@ public class App {
 
             for (String script : scripts) {
                 String rendering = Templating.untemplate(script, values );
-                    System.out.println( rendering );
+                    System.out.println( "\n[" + rendering + "]" );
                     Process process = null; 
                     int result = 0;
 
                     try {
                         process = runtime.exec( new String[]{ "cmd.exe", "/C", rendering }  );
                         result = process.waitFor();
+                        ByteArrayOutputStream baos =new ByteArrayOutputStream();
+                        BufferedReader br = new BufferedReader( new InputStreamReader(process.getInputStream()));
+
+                        while( br.ready()) {
+                            System.out.println( br.readLine() );
+                        }
 
                         if( result != 0 ) {
+                            System.out.println("Strange : " + result);
                             break;
                         }
                     } catch (IOException e) {
