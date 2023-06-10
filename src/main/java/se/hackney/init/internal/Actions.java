@@ -31,7 +31,7 @@ public class Actions {
         }
 
         if (values.isList()) {
-            List<File> directories = Arrays.asList(new File(values.getHome()).listFiles(File::isDirectory));
+            List<File> directories = Arrays.asList(new File( values.getHome() + File.separator + "templates" ).listFiles(File::isDirectory));
 
             for (File directory : directories) {
                 String localDirectory = directory.getName();

@@ -41,9 +41,10 @@ public class App {
 
             values.setTemplateHome(templateHome);
             values.setSettingsHome(settingsHome);
+
+            applyConfiguration(values);
         }
 
-        applyConfiguration(values);
         ArgumentParser.parse(values, args);
 
         Actions.act(values);
@@ -88,9 +89,19 @@ public class App {
             for (String script : scripts) {
                 String rendering = Templating.untemplate(script, values );
                     System.out.println( rendering );
+                    Process process = null; 
+                    int result = 0;
+
                     try {
-                        runtime.exec( new String[]{ "cmd.exe", "/C", rendering }  );
+                        process = runtime.exec( new String[]{ "cmd.exe", "/C", rendering }  );
+                        result = process.waitFor();
+
+                        if( result != 0 ) {
+                            break;
+                        }
                     } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
             }
